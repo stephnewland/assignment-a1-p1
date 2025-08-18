@@ -1,6 +1,6 @@
 // app/escape-room/page.tsx
 'use client';
 
-export default function CourtRoomPage() {
-  return <h1>Court Room Page</h1>;
+export default function EscapeRoomPage() {
+  return <h1>Escape Room Page</h1>;
 }

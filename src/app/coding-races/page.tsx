@@ -1,6 +1,6 @@
 // app/coding-races/page.tsx
 'use client';
 
-export default function CourtRoomPage() {
-  return <h1>Court Room Page</h1>;
+export default function CodingRacePage() {
+  return <h1>Coding Race Page</h1>;
 }

@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { useState } from 'react';
 
 type HeaderProps = {
   theme: 'light' | 'dark';
@@ -8,8 +9,10 @@ type HeaderProps = {
 };
 
 export default function Header({ theme, toggleTheme }: HeaderProps) {
+  const [menuOpen, setMenuOpen] = useState(false);
+
   const headerStyle: React.CSSProperties = {
-    position: 'relative', // 👈 Needed for absolute bar
+    position: 'relative',
     backgroundColor: theme === 'dark' ? '#222' : '#f5f5f5',
     color: theme === 'dark' ? '#eee' : '#333',
     borderBottom: `1px solid ${theme === 'dark' ? '#444' : '#ccc'}`,
@@ -71,7 +74,7 @@ export default function Header({ theme, toggleTheme }: HeaderProps) {
         }}
       />
 
-      {/* Left side: Student number + nav links */}
+      {/* 👈 Left side: Student number + nav links */}
       <div style={{ display: 'flex', flexDirection: 'column' }}>
         <div style={{ fontWeight: 'bold' }}>Student #21993608</div>
 
@@ -84,7 +87,7 @@ export default function Header({ theme, toggleTheme }: HeaderProps) {
         </nav>
       </div>
 
-      {/* Right side: Theme toggle + hamburger */}
+      {/* 👉 Right side: Theme toggle + hamburger */}
       <div style={{ display: 'flex', alignItems: 'center' }}>
         <button
           aria-label="Toggle between light and dark theme"
@@ -106,12 +109,36 @@ export default function Header({ theme, toggleTheme }: HeaderProps) {
 
         <button
           aria-label="Open menu"
-          onClick={() => alert('Menu clicked')}
+          onClick={() => setMenuOpen(!menuOpen)}
           style={menuButtonStyle}
         >
           ☰
         </button>
       </div>
+
+      {/* 📂 Dropdown menu */}
+      {menuOpen && (
+        <div
+          style={{
+            position: 'absolute',
+            top: '100%',
+            right: '1rem',
+            backgroundColor: theme === 'dark' ? '#333' : '#fff',
+            border: `1px solid ${theme === 'dark' ? '#555' : '#ccc'}`,
+            padding: '1rem',
+            borderRadius: '8px',
+            boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
+            zIndex: 1000,
+          }}
+        >
+          <nav style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+            <Link href="/coding-races" style={linkStyle} onClick={() => setMenuOpen(false)}>Coding Races</Link>
+            <Link href="/court-room" style={linkStyle} onClick={() => setMenuOpen(false)}>Court Room</Link>
+            <Link href="/escape-room" style={linkStyle} onClick={() => setMenuOpen(false)}>Escape Room</Link>
+            <Link href="/about" style={linkStyle} onClick={() => setMenuOpen(false)}>About</Link>
+          </nav>
+        </div>
+      )}
     </header>
   );
 }
