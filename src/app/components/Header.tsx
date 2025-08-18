@@ -1,5 +1,7 @@
 'use client';
 
+import Link from 'next/link';
+
 type HeaderProps = {
   theme: 'light' | 'dark';
   toggleTheme: () => void;
@@ -7,6 +9,7 @@ type HeaderProps = {
 
 export default function Header({ theme, toggleTheme }: HeaderProps) {
   const headerStyle: React.CSSProperties = {
+    position: 'relative', // 👈 Needed for absolute bar
     backgroundColor: theme === 'dark' ? '#222' : '#f5f5f5',
     color: theme === 'dark' ? '#eee' : '#333',
     borderBottom: `1px solid ${theme === 'dark' ? '#444' : '#ccc'}`,
@@ -42,9 +45,46 @@ export default function Header({ theme, toggleTheme }: HeaderProps) {
     marginLeft: '1rem',
   };
 
+  const menuStyle: React.CSSProperties = {
+    display: 'flex',
+    gap: '1rem',
+    marginTop: '0.5rem',
+  };
+
+  const linkStyle: React.CSSProperties = {
+    textDecoration: 'none',
+    color: theme === 'dark' ? '#eee' : '#333',
+    fontWeight: 'bold',
+  };
+
   return (
     <header role="banner" style={headerStyle}>
-      <div style={{ fontWeight: 'bold' }}>Student #21993608</div>
+      {/* 🔝 Top bar positioned absolutely */}
+      <div
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          height: '4px',
+          width: '100%',
+          backgroundColor: theme === 'light' ? '#000' : '#00ffcc',
+        }}
+      />
+
+      {/* Left side: Student number + nav links */}
+      <div style={{ display: 'flex', flexDirection: 'column' }}>
+        <div style={{ fontWeight: 'bold' }}>Student #21993608</div>
+
+        <nav style={menuStyle}>
+          <Link href="/tabs" style={linkStyle}>Tabs</Link>
+          <Link href="/coding-races" style={linkStyle}>Coding Races</Link>
+          <Link href="/court-room" style={linkStyle}>Court Room</Link>
+          <Link href="/escape-room" style={linkStyle}>Escape Room</Link>
+          <Link href="/about" style={linkStyle}>About</Link>
+        </nav>
+      </div>
+
+      {/* Right side: Theme toggle + hamburger */}
       <div style={{ display: 'flex', alignItems: 'center' }}>
         <button
           aria-label="Toggle between light and dark theme"
@@ -54,12 +94,12 @@ export default function Header({ theme, toggleTheme }: HeaderProps) {
           {theme === 'light' ? (
             <>
               <span style={iconStyle}>🌙</span>
-              <span>Switch to Dark Mode</span>
+              <span>Dark Mode</span>
             </>
           ) : (
             <>
               <span style={iconStyle}>☀️</span>
-              <span>Switch to Light Mode</span>
+              <span>Light Mode</span>
             </>
           )}
         </button>

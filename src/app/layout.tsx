@@ -28,7 +28,6 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body style={bodyStyle}>
-        <Tracker theme={theme} progress={progress} />
         <Header theme={theme} toggleTheme={toggleTheme} />
         <main>{children}</main>
         <Footer theme={theme} />
