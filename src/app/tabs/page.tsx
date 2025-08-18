@@ -2,5 +2,5 @@
 'use client';
 
 export default function TabsPage() {
-  return <h1>Tabs Page</h1>;
+  return <h1 aria-label="Tabs Page">Tabs Page</h1>;
 }

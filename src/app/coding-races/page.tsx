@@ -2,5 +2,5 @@
 'use client';
 
 export default function CodingRacePage() {
-  return <h1>Coding Race Page</h1>;
+  return <h1 aria-label="Coding Race Page">Coding Race Page</h1>;
 }

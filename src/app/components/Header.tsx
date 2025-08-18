@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 type HeaderProps = {
   theme: 'light' | 'dark';
@@ -10,6 +10,17 @@ type HeaderProps = {
 
 export default function Header({ theme, toggleTheme }: HeaderProps) {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const headerStyle: React.CSSProperties = {
     position: 'relative',
@@ -62,7 +73,6 @@ export default function Header({ theme, toggleTheme }: HeaderProps) {
 
   return (
     <header role="banner" style={headerStyle}>
-      {/* 🔝 Top bar positioned absolutely */}
       <div
         style={{
           position: 'absolute',
@@ -74,20 +84,22 @@ export default function Header({ theme, toggleTheme }: HeaderProps) {
         }}
       />
 
-      {/* 👈 Left side: Student number + nav links */}
       <div style={{ display: 'flex', flexDirection: 'column' }}>
-        <div style={{ fontWeight: 'bold' }}>Student #21993608</div>
+        <p aria-label="Student ID" style={{ fontWeight: 'bold' }}>
+          Student #21993608
+        </p>
 
-        <nav style={menuStyle}>
-          <Link href="/tabs" style={linkStyle}>Tabs</Link>
-          <Link href="/coding-races" style={linkStyle}>Coding Races</Link>
-          <Link href="/court-room" style={linkStyle}>Court Room</Link>
-          <Link href="/escape-room" style={linkStyle}>Escape Room</Link>
-          <Link href="/about" style={linkStyle}>About</Link>
-        </nav>
+        {!isMobile && (
+          <nav style={menuStyle} aria-label="Main navigation">
+            <Link href="/tabs" style={linkStyle} aria-label="Navigate to Tabs page">Tabs</Link>
+            <Link href="/coding-races" style={linkStyle} aria-label="Navigate to Coding Races page">Coding Races</Link>
+            <Link href="/court-room" style={linkStyle} aria-label="Navigate to Court Room page">Court Room</Link>
+            <Link href="/escape-room" style={linkStyle} aria-label="Navigate to Escape Room page">Escape Room</Link>
+            <Link href="/about" style={linkStyle} aria-label="Navigate to About page">About</Link>
+          </nav>
+        )}
       </div>
 
-      {/* 👉 Right side: Theme toggle + hamburger */}
       <div style={{ display: 'flex', alignItems: 'center' }}>
         <button
           aria-label="Toggle between light and dark theme"
@@ -106,36 +118,37 @@ export default function Header({ theme, toggleTheme }: HeaderProps) {
             </>
           )}
         </button>
-
-        <button
-          aria-label="Open menu"
-          onClick={() => setMenuOpen(!menuOpen)}
-          style={menuButtonStyle}
-        >
-          ☰
-        </button>
       </div>
 
-      {/* 📂 Dropdown menu */}
+      <button
+        aria-label="Toggle menu visibility"
+        aria-expanded={menuOpen}
+        onClick={() => setMenuOpen(!menuOpen)}
+        style={menuButtonStyle}
+      >
+        ☰
+      </button>
+
       {menuOpen && (
         <div
           style={{
             position: 'absolute',
             top: '100%',
-            right: '1rem',
+            left: 0,
+            width: '100%',
             backgroundColor: theme === 'dark' ? '#333' : '#fff',
-            border: `1px solid ${theme === 'dark' ? '#555' : '#ccc'}`,
+            borderTop: `1px solid ${theme === 'dark' ? '#555' : '#ccc'}`,
             padding: '1rem',
-            borderRadius: '8px',
             boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
             zIndex: 1000,
           }}
         >
-          <nav style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-            <Link href="/coding-races" style={linkStyle} onClick={() => setMenuOpen(false)}>Coding Races</Link>
-            <Link href="/court-room" style={linkStyle} onClick={() => setMenuOpen(false)}>Court Room</Link>
-            <Link href="/escape-room" style={linkStyle} onClick={() => setMenuOpen(false)}>Escape Room</Link>
-            <Link href="/about" style={linkStyle} onClick={() => setMenuOpen(false)}>About</Link>
+          <nav style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }} aria-label="Dropdown navigation">
+            <Link href="/tabs" style={linkStyle} aria-label="Navigate to Tabs page" onClick={() => setMenuOpen(false)}>Tabs</Link>
+            <Link href="/coding-races" style={linkStyle} aria-label="Navigate to Coding Races page" onClick={() => setMenuOpen(false)}>Coding Races</Link>
+            <Link href="/court-room" style={linkStyle} aria-label="Navigate to Court Room page" onClick={() => setMenuOpen(false)}>Court Room</Link>
+            <Link href="/escape-room" style={linkStyle} aria-label="Navigate to Escape Room page" onClick={() => setMenuOpen(false)}>Escape Room</Link>
+            <Link href="/about" style={linkStyle} aria-label="Navigate to About page" onClick={() => setMenuOpen(false)}>About</Link>
           </nav>
         </div>
       )}

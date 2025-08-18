@@ -16,7 +16,7 @@ export default function Footer({ theme }: FooterProps) {
 
   return (
     <footer role="contentinfo" style={style}>
-      &copy; Steph Newland #21993608 2025
+      <p>&copy; Steph Newland | #21993608 | August 2025</p>
     </footer>
   );
 }
