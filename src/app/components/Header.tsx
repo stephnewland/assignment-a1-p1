@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/router';
 
 type HeaderProps = {
   theme: 'light' | 'dark';
@@ -11,6 +12,7 @@ type HeaderProps = {
 export default function Header({ theme, toggleTheme }: HeaderProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     const handleResize = () => {
@@ -21,6 +23,17 @@ export default function Header({ theme, toggleTheme }: HeaderProps) {
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
+
+  useEffect(() => {
+    const lastVisited = document.cookie
+      .split('; ')
+      .find((row) => row.startsWith('lastTab='))
+      ?.split('=')[1];
+
+    if (lastVisited && router.pathname === '/') {
+      router.push(lastVisited);
+    }
+  }, [router]);
 
   const headerStyle: React.CSSProperties = {
     position: 'relative',
@@ -69,6 +82,11 @@ export default function Header({ theme, toggleTheme }: HeaderProps) {
     textDecoration: 'none',
     color: theme === 'dark' ? '#eee' : '#333',
     fontWeight: 'bold',
+  };
+
+  const handleLinkClick = (path: string) => {
+    document.cookie = `lastTab=${path}; path=/`;
+    setMenuOpen(false);
   };
 
   return (
@@ -144,11 +162,11 @@ export default function Header({ theme, toggleTheme }: HeaderProps) {
           }}
         >
           <nav style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }} aria-label="Dropdown navigation">
-            <Link href="/tabs" style={linkStyle} aria-label="Navigate to Tabs page" onClick={() => setMenuOpen(false)}>Tabs</Link>
-            <Link href="/coding-races" style={linkStyle} aria-label="Navigate to Coding Races page" onClick={() => setMenuOpen(false)}>Coding Races</Link>
-            <Link href="/court-room" style={linkStyle} aria-label="Navigate to Court Room page" onClick={() => setMenuOpen(false)}>Court Room</Link>
-            <Link href="/escape-room" style={linkStyle} aria-label="Navigate to Escape Room page" onClick={() => setMenuOpen(false)}>Escape Room</Link>
-            <Link href="/about" style={linkStyle} aria-label="Navigate to About page" onClick={() => setMenuOpen(false)}>About</Link>
+            <Link href="/tabs" style={linkStyle} aria-label="Navigate to Tabs page" onClick={() => handleLinkClick('/tabs')}>Tabs</Link>
+            <Link href="/coding-races" style={linkStyle} aria-label="Navigate to Coding Races page" onClick={() => handleLinkClick('/coding-races')}>Coding Races</Link>
+            <Link href="/court-room" style={linkStyle} aria-label="Navigate to Court Room page" onClick={() => handleLinkClick('/court-room')}>Court Room</Link>
+            <Link href="/escape-room" style={linkStyle} aria-label="Navigate to Escape Room page" onClick={() => handleLinkClick('/escape-room')}>Escape Room</Link>
+            <Link href="/about" style={linkStyle} aria-label="Navigate to About page" onClick={() => handleLinkClick('/about')}>About</Link>
           </nav>
         </div>
       )}

@@ -5,13 +5,15 @@ export default function AboutPage() {
     <main aria-label="About Page" style={{ padding: '2rem', fontFamily: 'sans-serif' }}>
       <h1>About Page</h1>
 
-      <section aria-label="Introduction to the website" style={{ marginBottom: '2rem' }}>
+        <section aria-label="Introduction to the website" style={{ marginBottom: '2rem' }}>
         <p>
-          Welcome to our interactive coding platform! This site is designed to help you learn HTML, CSS, and JavaScript
-          through fun challenges like Escape Rooms, Coding Races, and Court Room debates.
+          Welcome to my website. My name is <strong>Steph Newland</strong>, and my student number is <strong>21993608</strong>.
+        </p>
+        <p>
+          This site demonstrates a Next.js application with accessibility, theme toggling, and interactive features.
         </p>
       </section>
-
+      
       <section aria-label="Video tutorial section">
         <h2>Watch the tutorial:</h2>
         <video
