@@ -36,15 +36,30 @@ export default function HomePage() {
 
   return (
     <>
-      <Header theme="light" toggleTheme={() => {}} />
-
       <main style={{ padding: '2rem', maxWidth: '800px', margin: '0 auto' }}>
-        <h1 style={{ marginBottom: '1rem' }}>Generate HTML5 + JS + Inline CSS</h1>
+        <h1 style={{ marginBottom: '1rem' }}>CSE3CWA</h1>
+
+        <textarea
+          value={htmlCode}
+          readOnly
+          rows={20}
+          style={{
+            width: '100%',
+            fontFamily: 'monospace',
+            padding: '1rem',
+            border: '1px solid #ccc',
+            borderRadius: '4px',
+            backgroundColor: '#fff',
+            resize: 'vertical',
+            marginBottom: '1rem',
+          }}
+          aria-label="Generated HTML code"
+        />
 
         <button
           onClick={generateCode}
           style={{
-            marginBottom: '1rem',
+            marginBottom: '0.5rem',
             padding: '0.5rem 1rem',
             fontSize: '1rem',
             cursor: 'pointer',
@@ -61,7 +76,6 @@ export default function HomePage() {
         <button
           onClick={copyToClipboard}
           style={{
-            marginBottom: '1rem',
             padding: '0.5rem 1rem',
             fontSize: '1rem',
             cursor: 'pointer',
@@ -74,22 +88,6 @@ export default function HomePage() {
         >
           Copy to Clipboard
         </button>
-
-        <textarea
-          value={htmlCode}
-          readOnly
-          rows={20}
-          style={{
-            width: '100%',
-            fontFamily: 'monospace',
-            padding: '1rem',
-            border: '1px solid #ccc',
-            borderRadius: '4px',
-            backgroundColor: '#fff',
-            resize: 'vertical',
-          }}
-          aria-label="Generated HTML code"
-        />
       </main>
     </>
   );

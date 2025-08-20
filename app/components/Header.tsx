@@ -25,17 +25,6 @@ export default function Header({ theme, toggleTheme }: HeaderProps) {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  useEffect(() => {
-    const lastVisited = document.cookie
-      .split('; ')
-      .find((row) => row.startsWith('lastTab='))
-      ?.split('=')[1];
-
-    if (lastVisited && pathname === '/') {
-      router.push(lastVisited);
-    }
-  }, [pathname, router]);
-
   const handleLinkClick = (path: string) => {
     document.cookie = `lastTab=${path}; path=/`;
     setMenuOpen(false);
@@ -84,7 +73,6 @@ export default function Header({ theme, toggleTheme }: HeaderProps) {
     border: 'none',
     cursor: 'pointer',
     color: theme === 'dark' ? '#eee' : '#333',
-    marginLeft: '1rem',
   };
 
   const linkStyle: React.CSSProperties = {
@@ -95,6 +83,7 @@ export default function Header({ theme, toggleTheme }: HeaderProps) {
 
   return (
     <header role="banner" style={headerStyle}>
+      {/* Decorative top bar */}
       <div
         style={{
           position: 'absolute',
@@ -106,13 +95,17 @@ export default function Header({ theme, toggleTheme }: HeaderProps) {
         }}
       />
 
+      {/* Left section: Student ID + nav */}
       <div style={{ display: 'flex', flexDirection: 'column' }}>
         <p aria-label="Student ID" style={{ fontWeight: 'bold' }}>
           Student #21993608
         </p>
 
         {!isMobile && (
-          <nav style={{ display: 'flex', gap: '1rem', marginTop: '0.5rem' }} aria-label="Main navigation">
+          <nav
+            style={{ display: 'flex', gap: '1rem', marginTop: '0.5rem' }}
+            aria-label="Main navigation"
+          >
             {navLinks.map(({ href, label }) => (
               <Link
                 key={href}
@@ -128,7 +121,8 @@ export default function Header({ theme, toggleTheme }: HeaderProps) {
         )}
       </div>
 
-      <div style={{ display: 'flex', alignItems: 'center' }}>
+      {/* Right section: Toggle + Hamburger */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
         <button
           aria-label="Toggle between light and dark theme"
           onClick={toggleTheme}
@@ -146,23 +140,24 @@ export default function Header({ theme, toggleTheme }: HeaderProps) {
             </>
           )}
         </button>
+
+        <button
+          aria-label="Toggle menu visibility"
+          aria-expanded={menuOpen}
+          onClick={() => setMenuOpen(!menuOpen)}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              setMenuOpen(!menuOpen);
+            }
+          }}
+          tabIndex={0}
+          style={menuButtonStyle}
+        >
+          ☰
+        </button>
       </div>
 
-      <button
-        aria-label="Toggle menu visibility"
-        aria-expanded={menuOpen}
-        onClick={() => setMenuOpen(!menuOpen)}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            setMenuOpen(!menuOpen);
-          }
-        }}
-        tabIndex={0}
-        style={menuButtonStyle}
-      >
-        ☰
-      </button>
-
+      {/* Mobile dropdown menu */}
       {menuOpen && (
         <div
           style={{
@@ -177,7 +172,10 @@ export default function Header({ theme, toggleTheme }: HeaderProps) {
             zIndex: 1000,
           }}
         >
-          <nav style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }} aria-label="Dropdown navigation">
+          <nav
+            style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}
+            aria-label="Dropdown navigation"
+          >
             {navLinks.map(({ href, label }) => (
               <Link
                 key={href}
