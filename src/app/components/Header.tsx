@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/router';
+import { useRouter, usePathname } from 'next/navigation';
 
 type HeaderProps = {
   theme: 'light' | 'dark';
@@ -13,6 +13,7 @@ export default function Header({ theme, toggleTheme }: HeaderProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const router = useRouter();
+  const pathname = usePathname();
 
   useEffect(() => {
     const handleResize = () => {
@@ -30,10 +31,23 @@ export default function Header({ theme, toggleTheme }: HeaderProps) {
       .find((row) => row.startsWith('lastTab='))
       ?.split('=')[1];
 
-    if (lastVisited && router.pathname === '/') {
+    if (lastVisited && pathname === '/') {
       router.push(lastVisited);
     }
-  }, [router]);
+  }, [pathname, router]);
+
+  const handleLinkClick = (path: string) => {
+    document.cookie = `lastTab=${path}; path=/`;
+    setMenuOpen(false);
+  };
+
+  const navLinks = [
+    { href: '/tabs', label: 'Tabs' },
+    { href: '/coding-races', label: 'Coding Races' },
+    { href: '/court-room', label: 'Court Room' },
+    { href: '/escape-room', label: 'Escape Room' },
+    { href: '/about', label: 'About' },
+  ];
 
   const headerStyle: React.CSSProperties = {
     position: 'relative',
@@ -44,6 +58,7 @@ export default function Header({ theme, toggleTheme }: HeaderProps) {
     justifyContent: 'space-between',
     alignItems: 'center',
     padding: '1rem',
+    flexWrap: 'wrap',
   };
 
   const buttonStyle: React.CSSProperties = {
@@ -72,21 +87,10 @@ export default function Header({ theme, toggleTheme }: HeaderProps) {
     marginLeft: '1rem',
   };
 
-  const menuStyle: React.CSSProperties = {
-    display: 'flex',
-    gap: '1rem',
-    marginTop: '0.5rem',
-  };
-
   const linkStyle: React.CSSProperties = {
     textDecoration: 'none',
     color: theme === 'dark' ? '#eee' : '#333',
     fontWeight: 'bold',
-  };
-
-  const handleLinkClick = (path: string) => {
-    document.cookie = `lastTab=${path}; path=/`;
-    setMenuOpen(false);
   };
 
   return (
@@ -108,12 +112,18 @@ export default function Header({ theme, toggleTheme }: HeaderProps) {
         </p>
 
         {!isMobile && (
-          <nav style={menuStyle} aria-label="Main navigation">
-            <Link href="/tabs" style={linkStyle} aria-label="Navigate to Tabs page">Tabs</Link>
-            <Link href="/coding-races" style={linkStyle} aria-label="Navigate to Coding Races page">Coding Races</Link>
-            <Link href="/court-room" style={linkStyle} aria-label="Navigate to Court Room page">Court Room</Link>
-            <Link href="/escape-room" style={linkStyle} aria-label="Navigate to Escape Room page">Escape Room</Link>
-            <Link href="/about" style={linkStyle} aria-label="Navigate to About page">About</Link>
+          <nav style={{ display: 'flex', gap: '1rem', marginTop: '0.5rem' }} aria-label="Main navigation">
+            {navLinks.map(({ href, label }) => (
+              <Link
+                key={href}
+                href={href}
+                style={linkStyle}
+                aria-label={`Navigate to ${label} page`}
+                aria-current={pathname === href ? 'page' : undefined}
+              >
+                {label}
+              </Link>
+            ))}
           </nav>
         )}
       </div>
@@ -142,6 +152,12 @@ export default function Header({ theme, toggleTheme }: HeaderProps) {
         aria-label="Toggle menu visibility"
         aria-expanded={menuOpen}
         onClick={() => setMenuOpen(!menuOpen)}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            setMenuOpen(!menuOpen);
+          }
+        }}
+        tabIndex={0}
         style={menuButtonStyle}
       >
         ☰
@@ -162,11 +178,18 @@ export default function Header({ theme, toggleTheme }: HeaderProps) {
           }}
         >
           <nav style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }} aria-label="Dropdown navigation">
-            <Link href="/tabs" style={linkStyle} aria-label="Navigate to Tabs page" onClick={() => handleLinkClick('/tabs')}>Tabs</Link>
-            <Link href="/coding-races" style={linkStyle} aria-label="Navigate to Coding Races page" onClick={() => handleLinkClick('/coding-races')}>Coding Races</Link>
-            <Link href="/court-room" style={linkStyle} aria-label="Navigate to Court Room page" onClick={() => handleLinkClick('/court-room')}>Court Room</Link>
-            <Link href="/escape-room" style={linkStyle} aria-label="Navigate to Escape Room page" onClick={() => handleLinkClick('/escape-room')}>Escape Room</Link>
-            <Link href="/about" style={linkStyle} aria-label="Navigate to About page" onClick={() => handleLinkClick('/about')}>About</Link>
+            {navLinks.map(({ href, label }) => (
+              <Link
+                key={href}
+                href={href}
+                style={linkStyle}
+                aria-label={`Navigate to ${label} page`}
+                aria-current={pathname === href ? 'page' : undefined}
+                onClick={() => handleLinkClick(href)}
+              >
+                {label}
+              </Link>
+            ))}
           </nav>
         </div>
       )}
