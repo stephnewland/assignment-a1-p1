@@ -1,4 +1,3 @@
-// app/page.tsx
 'use client';
 
 import { useState } from 'react';
@@ -30,6 +29,11 @@ export default function HomePage() {
     setHtmlCode(code);
   };
 
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(htmlCode);
+    alert('Code copied to clipboard!');
+  };
+
   return (
     <>
       <Header theme="light" toggleTheme={() => {}} />
@@ -52,6 +56,23 @@ export default function HomePage() {
           aria-label="Generate HTML code"
         >
           Generate Code
+        </button>
+
+        <button
+          onClick={copyToClipboard}
+          style={{
+            marginBottom: '1rem',
+            padding: '0.5rem 1rem',
+            fontSize: '1rem',
+            cursor: 'pointer',
+            backgroundColor: '#00b894',
+            color: '#fff',
+            border: 'none',
+            borderRadius: '4px',
+          }}
+          aria-label="Copy HTML code to clipboard"
+        >
+          Copy to Clipboard
         </button>
 
         <textarea
