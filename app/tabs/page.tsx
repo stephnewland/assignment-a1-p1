@@ -3,7 +3,11 @@
 import { useState } from 'react';
 
 export default function TabsPage() {
-  const [tabs, setTabs] = useState([{ label: 'Tab 1', content: 'Content for Tab 1' }]);
+  const [tabs, setTabs] = useState([
+    { label: 'Escape Room', content: 'Escape Room – Not yet finished.' },
+    { label: 'Coding Races', content: 'Coding Races – Not yet finished.' },
+    { label: 'Court Room', content: 'Court Room – Not yet finished.' },
+  ]);
   const [generatedCode, setGeneratedCode] = useState('');
 
   const handleTabChange = (index: number, field: 'label' | 'content', value: string) => {
@@ -13,11 +17,11 @@ export default function TabsPage() {
   };
 
   const addTab = () => {
-    setTabs([...tabs, { label: `Tab ${tabs.length + 1}`, content: '' }]);
+    setTabs([...tabs, { label: `Tab ${tabs.length + 1}`, content: 'Not yet finished.' }]);
   };
 
   const deleteTab = (index: number) => {
-    if (tabs.length === 1) return; // Prevent deleting the last tab
+    if (tabs.length === 1) return;
     const updated = [...tabs];
     updated.splice(index, 1);
     setTabs(updated);
@@ -27,42 +31,51 @@ export default function TabsPage() {
     const buttons = tabs
       .map((tab, i) => {
         const id = `tab${i}`;
-        return `<button onclick="showTab('${id}')">${tab.label}</button>`;
+        const selected = i === 0 ? 'true' : 'false';
+        return `<button role="tab" aria-selected="${selected}" onclick="showTab('${id}', this)">${tab.label}</button>`;
       })
-      .join('\n');
+      .join('\n    ');
 
     const contents = tabs
       .map((tab, i) => {
         const id = `tab${i}`;
-        const display = i === 0 ? 'block' : 'none';
-        return `<div id="${id}" style="display:${display}; padding:1rem; border:1px solid #ccc;">${tab.content}</div>`;
+        const active = i === 0 ? 'active' : '';
+        return `<div id="${id}" class="tab-content ${active}" role="tabpanel">${tab.content}</div>`;
       })
-      .join('\n');
+      .join('\n    ');
 
-    const script = `
-<script>
-  function showTab(id) {
-    ${tabs.map((_, i) => `document.getElementById('tab${i}').style.display = 'none';`).join('\n    ')}
-    document.getElementById(id).style.display = 'block';
-  }
-</script>
-    `.trim();
+    const fullCode = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tab Interface</title>
+  <style>
+    body { font-family: sans-serif; padding: 1rem; }
+    .tabs { display: flex; gap: 1rem; margin-bottom: 1rem; }
+    .tab-content { display: none; padding: 1rem; border: 1px solid #ccc; }
+    .tab-content.active { display: block; }
+    button[aria-selected="true"] { font-weight: bold; }
+  </style>
+</head>
+<body>
+  <h1>Interactive Tabs</h1>
+  <div class="tabs" role="tablist">
+    ${buttons}
+  </div>
 
-    const fullCode = `
-      <!DOCTYPE html>
-      <html lang="en">
-      <head>
-        <meta charset="UTF-8">
-        <title>Tabs Example</title>
-      </head>
-      <body>
-        ${buttons}
-        <br/><br/>
-        ${contents}
-        ${script}
-      </body>
-      </html>
-    `.trim();
+  ${contents}
+
+  <script>
+    function showTab(id, btn) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('[role="tab"]').forEach(tab => tab.setAttribute('aria-selected', 'false'));
+      document.getElementById(id).classList.add('active');
+      btn.setAttribute('aria-selected', 'true');
+    }
+  </script>
+</body>
+</html>`;
 
     setGeneratedCode(fullCode);
   };

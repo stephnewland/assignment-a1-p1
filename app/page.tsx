@@ -1,94 +1,23 @@
-'use client';
+import { cookies } from 'next/headers';
+import CodeGeneratorWrapper from './components/CodeGeneratorWrapper';
 
-import { useState } from 'react';
-import Header from './components/Header';
-
-export default function HomePage() {
-  const [htmlCode, setHtmlCode] = useState('');
-
-  const generateCode = () => {
-    const code = `
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Hello</title>
-  <style>
-    body { font-family: sans-serif; background: #f0f0f0; padding: 2rem; }
-    h1 { color: #0070f3; }
-  </style>
-</head>
-<body>
-  <h1>Hello from generated HTML!</h1>
-  <script>
-    console.log("Hello from JavaScript!");
-  </script>
-</body>
-</html>
-    `.trim();
-    setHtmlCode(code);
-  };
-
-  const copyToClipboard = () => {
-    navigator.clipboard.writeText(htmlCode);
-    alert('Code copied to clipboard!');
-  };
+export default async function HomePage() {
+  const cookieStore = await cookies(); // ✅ Await the cookies() call
+  const lastTab = cookieStore.get('lastTab')?.value || '';
 
   return (
-    <>
-      <main style={{ padding: '2rem', maxWidth: '800px', margin: '0 auto' }}>
-        <h1 style={{ marginBottom: '1rem' }}>CSE3CWA</h1>
+    <main style={{ padding: '2rem', maxWidth: '800px', margin: '0 auto' }}>
+      <h1 style={{ marginBottom: '1rem' }}>CSE3CWA</h1>
 
-        <textarea
-          value={htmlCode}
-          readOnly
-          rows={20}
-          style={{
-            width: '100%',
-            fontFamily: 'monospace',
-            padding: '1rem',
-            border: '1px solid #ccc',
-            borderRadius: '4px',
-            backgroundColor: '#fff',
-            resize: 'vertical',
-            marginBottom: '1rem',
-          }}
-          aria-label="Generated HTML code"
-        />
+      {lastTab ? (
+        <p>
+          Last visited tab: <strong>{lastTab.replace('/', '')}</strong>
+        </p>
+      ) : (
+        <p aria-live="polite">Welcome! Choose a tab to begin.</p>
+      )}
 
-        <button
-          onClick={generateCode}
-          style={{
-            marginBottom: '0.5rem',
-            padding: '0.5rem 1rem',
-            fontSize: '1rem',
-            cursor: 'pointer',
-            backgroundColor: '#0070f3',
-            color: '#fff',
-            border: 'none',
-            borderRadius: '4px',
-          }}
-          aria-label="Generate HTML code"
-        >
-          Generate Code
-        </button>
-
-        <button
-          onClick={copyToClipboard}
-          style={{
-            padding: '0.5rem 1rem',
-            fontSize: '1rem',
-            cursor: 'pointer',
-            backgroundColor: '#00b894',
-            color: '#fff',
-            border: 'none',
-            borderRadius: '4px',
-          }}
-          aria-label="Copy HTML code to clipboard"
-        >
-          Copy to Clipboard
-        </button>
-      </main>
-    </>
+      <CodeGeneratorWrapper />
+    </main>
   );
 }
