@@ -31,11 +31,11 @@ export default function Header({ theme, toggleTheme }: HeaderProps) {
   };
 
   const navLinks = [
-    { href: '/tabs', label: 'Tabs' },
+    { href: '/about', label: 'About' },
     { href: '/coding-races', label: 'Coding Races' },
     { href: '/court-room', label: 'Court Room' },
     { href: '/escape-room', label: 'Escape Room' },
-    { href: '/about', label: 'About' },
+    { href: '/tabs', label: 'Tabs' }
   ];
 
   const headerStyle: React.CSSProperties = {

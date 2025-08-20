@@ -8,10 +8,9 @@ export default function AboutPage() {
       <section aria-labelledby="intro-heading" style={{ marginBottom: '2rem' }}>
         <h2 id="intro-heading">Introduction to the Website</h2>
         <p>
-          Welcome to my website. My name is <strong>Steph Newland</strong>, and my student number is <strong>21993608</strong>.
+          Welcome to my website. 
         </p>
-        <p>
-          This site demonstrates a Next.js application with accessibility, theme toggling, and interactive features.
+        <p>My name is <strong>Steph Newland</strong>, and my student number is <strong>21993608</strong>.
         </p>
       </section>
 
