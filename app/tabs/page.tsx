@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 export default function TabsPage() {
   const [tabs, setTabs] = useState([
@@ -9,6 +9,10 @@ export default function TabsPage() {
     { label: 'Court Room', content: 'Court Room – Not yet finished.' },
   ]);
   const [generatedCode, setGeneratedCode] = useState('');
+
+  useEffect(() => {
+    document.cookie = 'lastTab=tabs; path=/';
+  }, []);
 
   const handleTabChange = (index: number, field: 'label' | 'content', value: string) => {
     const updated = [...tabs];

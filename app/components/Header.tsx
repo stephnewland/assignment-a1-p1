@@ -26,11 +26,14 @@ export default function Header({ theme, toggleTheme }: HeaderProps) {
   }, []);
 
   const handleLinkClick = (path: string) => {
-    document.cookie = `lastTab=${path}; path=/`;
+    if (path !== '/') {
+      document.cookie = `lastTab=${path}; path=/`;
+    }
     setMenuOpen(false);
   };
 
   const navLinks = [
+    { href: '/', label: 'Home' },
     { href: '/about', label: 'About' },
     { href: '/coding-races', label: 'Coding Races' },
     { href: '/court-room', label: 'Court Room' },

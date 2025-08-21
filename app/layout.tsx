@@ -26,7 +26,7 @@ export default function RootLayout({
   };
 
   // Redirect to last visited tab if on homepage
-  useEffect(() => {
+  /*useEffect(() => {
     const lastTab = getCookie('lastTab');
     const validTabs = ['/tabs', '/coding-races', '/court-room', '/escape-room'];
 
@@ -37,7 +37,7 @@ export default function RootLayout({
     ) {
       router.push(lastTab);
     }
-  }, [pathname, router]);
+  }, [pathname, router]);*/
 
   // Theme-aware body styles
   const bodyStyle = {
