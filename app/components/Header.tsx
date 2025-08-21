@@ -19,7 +19,6 @@ export default function Header({ theme, toggleTheme }: HeaderProps) {
     const handleResize = () => {
       setIsMobile(window.innerWidth < 768);
     };
-
     handleResize();
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
@@ -33,12 +32,12 @@ export default function Header({ theme, toggleTheme }: HeaderProps) {
   };
 
   const navLinks = [
-    { href: '/', label: 'Home' },
-    { href: '/about', label: 'About' },
-    { href: '/coding-races', label: 'Coding Races' },
-    { href: '/court-room', label: 'Court Room' },
-    { href: '/escape-room', label: 'Escape Room' },
-    { href: '/tabs', label: 'Tabs' }
+    { href: '/', label: 'Home', ariaLabel: 'Go to homepage' },
+    { href: '/about', label: 'About', ariaLabel: 'Learn more about this project' },
+    { href: '/coding-races', label: 'Coding Races', ariaLabel: 'Go to Coding Races tab' },
+    { href: '/court-room', label: 'Court Room', ariaLabel: 'Go to Court Room tab' },
+    { href: '/escape-room', label: 'Escape Room', ariaLabel: 'Go to Escape Room tab' },
+    { href: '/tabs', label: 'Tabs', ariaLabel: 'View all tab options' },
   ];
 
   const headerStyle: React.CSSProperties = {
@@ -88,6 +87,7 @@ export default function Header({ theme, toggleTheme }: HeaderProps) {
     <header role="banner" style={headerStyle}>
       {/* Decorative top bar */}
       <div
+        aria-hidden="true"
         style={{
           position: 'absolute',
           top: 0,
@@ -98,7 +98,7 @@ export default function Header({ theme, toggleTheme }: HeaderProps) {
         }}
       />
 
-      {/* Left section: Student ID + nav */}
+      {/* Left section: Student ID + Desktop Nav */}
       <div style={{ display: 'flex', flexDirection: 'column' }}>
         <p aria-label="Student ID" style={{ fontWeight: 'bold' }}>
           Student #21993608
@@ -106,16 +106,19 @@ export default function Header({ theme, toggleTheme }: HeaderProps) {
 
         {!isMobile && (
           <nav
-            style={{ display: 'flex', gap: '1rem', marginTop: '0.5rem' }}
+            role="navigation"
+            tabIndex={0}
             aria-label="Main navigation"
+            style={{ display: 'flex', gap: '1rem', marginTop: '0.5rem' }}
           >
-            {navLinks.map(({ href, label }) => (
+            {navLinks.map(({ href, label, ariaLabel }) => (
               <Link
                 key={href}
                 href={href}
                 style={linkStyle}
-                aria-label={`Navigate to ${label} page`}
+                aria-label={ariaLabel}
                 aria-current={pathname === href ? 'page' : undefined}
+                onClick={() => handleLinkClick(href)}
               >
                 {label}
               </Link>
@@ -124,7 +127,7 @@ export default function Header({ theme, toggleTheme }: HeaderProps) {
         )}
       </div>
 
-      {/* Right section: Toggle + Hamburger */}
+      {/* Right section: Theme Toggle + Mobile Menu Button */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
         <button
           aria-label="Toggle between light and dark theme"
@@ -160,7 +163,7 @@ export default function Header({ theme, toggleTheme }: HeaderProps) {
         </button>
       </div>
 
-      {/* Mobile dropdown menu */}
+      {/* Mobile Dropdown Nav */}
       {menuOpen && (
         <div
           style={{
@@ -176,15 +179,17 @@ export default function Header({ theme, toggleTheme }: HeaderProps) {
           }}
         >
           <nav
-            style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}
+            role="navigation"
+            tabIndex={0}
             aria-label="Dropdown navigation"
+            style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}
           >
-            {navLinks.map(({ href, label }) => (
+            {navLinks.map(({ href, label, ariaLabel }) => (
               <Link
                 key={href}
                 href={href}
                 style={linkStyle}
-                aria-label={`Navigate to ${label} page`}
+                aria-label={ariaLabel}
                 aria-current={pathname === href ? 'page' : undefined}
                 onClick={() => handleLinkClick(href)}
               >
