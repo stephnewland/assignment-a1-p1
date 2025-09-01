@@ -3,7 +3,6 @@ import CodeGeneratorWrapper from './components/CodeGeneratorWrapper';
 
 export default async function HomePage() {
   const cookieStore = await cookies(); 
-  
   const lastTab = cookieStore.get('lastTab')?.value;
   const safeTab = lastTab && /^[a-z\-]+$/.test(lastTab) ? lastTab : '';
 
@@ -13,8 +12,7 @@ export default async function HomePage() {
 
       {safeTab ? (
         <p>
-          Last visited tab:{" "}
-          <strong>{formatTabName(safeTab)}</strong>
+          Last visited tab: <strong>{formatTabName(safeTab)}</strong>
         </p>
       ) : (
         <p aria-live="polite">Welcome! Choose a tab to begin.</p>

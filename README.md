@@ -1,42 +1,54 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Assignment 1 – CSE3CWA
 
-## Getting Started
+## Student Details
 
-First, run the development server:
+- Name: Steph Newland
+- Student Number: 21993608
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Overview
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+This project is a Next.js web application that generates standalone HTML5 + JavaScript code for tabbed interfaces and demonstrates accessible web development practices. The application is designed to run inside the Moodle LMS environment, allowing users to copy generated code into a blank HTML file.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Features Implemented
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- **Navigation**
+- **Accessible Header** with menu links for Home, About, Tabs, Escape Room, Coding Races, Court Room.
+- **Responsive Hamburger menu** for mobile devices.
+- **Dynamic Breadcrumbs** show navigation hierarchy.
+- **Dark/Light Theme Toggle** persists user preference.
 
-## Features
+### Homepage
 
-- Accessible Navigation: All interactive elements include ARIA labels and keyboard focus styles.
-- Theme Toggle: A semantic <button> allows users to switch between light and dark mode, with persistent state via localStorage.
-- Optimised Fonts: Uses Geist.
+- Displays last visited page via **cookies**.
+- Embeds a **HTML + JS code generator** (`CodeGenerator`) for demo purposes.
 
-## Learn More
+### About Page
 
-To learn more about Next.js, take a look at the following resources:
+- Contains student name and number.
+- Embedded tutorial video (`demo.mp4`) showing website usage.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Tabs Page
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- Interactive tab editor to create/edit/delete tabs.
+- Generates **standalone HTML + inline CSS + JS** copy-pasteable code.
+- Fully **accessible** with `role="tab"`, `aria-selected`, `role="tabpanel"`.
+- Copy-to-clipboard functionality included.
 
-## Deploy on Vercel
+### Placeholder Pages
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- Escape Room, Coding Races, Court Room pages are placeholders with cookie tracking.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Accessibility
+
+- All interactive elements include **ARIA labels** and semantic roles.
+- Keyboard navigation is fully supported.
+- Focus outlines visible for buttons, links, and form elements.
+
+## Cookies
+
+- Tracks **last visited tab/page**.
+- Homepage reads cookie securely and displays last visited tab name.
+
+## AI Generated content
+
+- Microsoft CoPilot helped suggest what content was required to go in this README file.
