@@ -9,6 +9,7 @@ export default function TabsPage() {
     { label: 'Court Room', content: 'Court Room – Not yet finished.' },
   ]);
   const [generatedCode, setGeneratedCode] = useState('');
+  const [copied, setCopied] = useState(false); // <-- state for copy feedback
 
   useEffect(() => {
     document.cookie = 'lastTab=tabs; path=/';
@@ -20,9 +21,7 @@ export default function TabsPage() {
     setTabs(updated);
   };
 
-  const addTab = () => {
-    setTabs([...tabs, { label: `Tab ${tabs.length + 1}`, content: 'Not yet finished.' }]);
-  };
+  const addTab = () => setTabs([...tabs, { label: `Tab ${tabs.length + 1}`, content: 'Not yet finished.' }]);
 
   const deleteTab = (index: number) => {
     if (tabs.length === 1) return;
@@ -67,9 +66,7 @@ export default function TabsPage() {
   <div class="tabs" role="tablist">
     ${buttons}
   </div>
-
   ${contents}
-
   <script>
     function showTab(id, btn) {
       document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
@@ -80,13 +77,14 @@ export default function TabsPage() {
   </script>
 </body>
 </html>`;
-
     setGeneratedCode(fullCode);
   };
 
+  // ✅ Copy to clipboard with accessible feedback
   const copyToClipboard = () => {
     navigator.clipboard.writeText(generatedCode);
-    alert('Code copied to clipboard!');
+    setCopied(true); // show message
+    setTimeout(() => setCopied(false), 2000); // hide after 2 seconds
   };
 
   return (
@@ -182,6 +180,11 @@ export default function TabsPage() {
       >
         Copy to Clipboard
       </button>
+
+      {/* Accessible feedback */}
+      <p aria-live="polite" style={{ color: 'green', minHeight: '1.2rem', marginTop: '0.5rem' }}>
+        {copied ? 'Code copied to clipboard!' : ''}
+      </p>
 
       <textarea
         value={generatedCode}

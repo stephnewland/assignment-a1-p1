@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 
 type HeaderProps = {
@@ -12,22 +12,26 @@ type HeaderProps = {
 export default function Header({ theme, toggleTheme }: HeaderProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const firstLinkRef = useRef<HTMLAnchorElement>(null);
+  const mobileNavRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const pathname = usePathname();
 
+  // Focus first link when menu opens
   useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
+    if (menuOpen) firstLinkRef.current?.focus();
+  }, [menuOpen]);
+
+  // Detect mobile screen
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
     handleResize();
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
   const handleLinkClick = (path: string) => {
-    if (path !== '/') {
-      document.cookie = `lastTab=${path}; path=/`;
-    }
+    if (path !== '/') document.cookie = `lastTab=${path}; path=/`;
     setMenuOpen(false);
   };
 
@@ -65,9 +69,7 @@ export default function Header({ theme, toggleTheme }: HeaderProps) {
     gap: '0.5rem',
   };
 
-  const iconStyle: React.CSSProperties = {
-    fontSize: '1.2rem',
-  };
+  const iconStyle: React.CSSProperties = { fontSize: '1.2rem' };
 
   const menuButtonStyle: React.CSSProperties = {
     fontSize: '1.5rem',
@@ -111,7 +113,7 @@ export default function Header({ theme, toggleTheme }: HeaderProps) {
             aria-label="Main navigation"
             style={{ display: 'flex', gap: '1rem', marginTop: '0.5rem' }}
           >
-            {navLinks.map(({ href, label, ariaLabel }) => (
+            {navLinks.map(({ href, label, ariaLabel }, index) => (
               <Link
                 key={href}
                 href={href}
@@ -119,6 +121,7 @@ export default function Header({ theme, toggleTheme }: HeaderProps) {
                 aria-label={ariaLabel}
                 aria-current={pathname === href ? 'page' : undefined}
                 onClick={() => handleLinkClick(href)}
+                ref={index === 0 ? firstLinkRef : null}
               >
                 {label}
               </Link>
@@ -151,54 +154,52 @@ export default function Header({ theme, toggleTheme }: HeaderProps) {
           aria-label="Toggle menu visibility"
           aria-expanded={menuOpen}
           onClick={() => setMenuOpen(!menuOpen)}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-              setMenuOpen(!menuOpen);
-            }
-          }}
           tabIndex={0}
           style={menuButtonStyle}
         >
-          ☰
+          {menuOpen ? '✖' : '☰'}
         </button>
       </div>
 
-      {/* Mobile Dropdown Nav */}
-      {menuOpen && (
-        <div
-          style={{
-            position: 'absolute',
-            top: '100%',
-            left: 0,
-            width: '100%',
-            backgroundColor: theme === 'dark' ? '#333' : '#fff',
-            borderTop: `1px solid ${theme === 'dark' ? '#555' : '#ccc'}`,
-            padding: '1rem',
-            boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
-            zIndex: 1000,
-          }}
+      {/* Mobile Dropdown Nav with smooth slide-down */}
+      <div
+        ref={mobileNavRef}
+        style={{
+          overflow: 'hidden',
+          maxHeight: menuOpen ? `${mobileNavRef.current?.scrollHeight ?? 0}px` : '0',
+          transition: 'max-height 0.3s ease-in-out',
+          position: 'absolute',
+          top: '100%',
+          left: 0,
+          width: '100%',
+          backgroundColor: theme === 'dark' ? '#333' : '#fff',
+          borderTop: `1px solid ${theme === 'dark' ? '#555' : '#ccc'}`,
+          padding: menuOpen ? '1rem' : '0 1rem',
+          boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
+          zIndex: 1000,
+        }}
+        aria-hidden={!menuOpen}
+      >
+        <nav
+          role="navigation"
+          tabIndex={0}
+          aria-label="Dropdown navigation"
+          style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}
         >
-          <nav
-            role="navigation"
-            tabIndex={0}
-            aria-label="Dropdown navigation"
-            style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}
-          >
-            {navLinks.map(({ href, label, ariaLabel }) => (
-              <Link
-                key={href}
-                href={href}
-                style={linkStyle}
-                aria-label={ariaLabel}
-                aria-current={pathname === href ? 'page' : undefined}
-                onClick={() => handleLinkClick(href)}
-              >
-                {label}
-              </Link>
-            ))}
-          </nav>
-        </div>
-      )}
+          {navLinks.map(({ href, label, ariaLabel }) => (
+            <Link
+              key={href}
+              href={href}
+              style={linkStyle}
+              aria-label={ariaLabel}
+              aria-current={pathname === href ? 'page' : undefined}
+              onClick={() => handleLinkClick(href)}
+            >
+              {label}
+            </Link>
+          ))}
+        </nav>
+      </div>
     </header>
   );
 }
