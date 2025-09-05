@@ -25,11 +25,12 @@ export default function ThemeToggle() {
   };
 
   return (
-    <button onClick={toggleTheme}
-      aria-label="Toggle theme" 
+    <button
+      onClick={toggleTheme}
+      aria-label="Toggle theme"
       aria-pressed={theme === 'dark'}
       style={{ margin: '1rem' }}
-      >
+    >
       {theme === 'light' ? '🌞 Light' : '🌙 Dark'}
     </button>
   );

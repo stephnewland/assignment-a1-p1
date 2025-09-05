@@ -9,16 +9,17 @@ export default function Breadcrumbs() {
   const segments = pathname.split('/').filter(Boolean);
 
   const labelMap: Record<string, string> = {
-    'tabs': 'Tabs',
+    tabs: 'Tabs',
     'coding-races': 'Coding Races',
     'court-room': 'Court Room',
     'escape-room': 'Escape Room',
-    'about': 'About',
+    about: 'About',
   };
 
   const crumbs = segments.map((segment, index) => {
     const href = '/' + segments.slice(0, index + 1).join('/');
-    const label = labelMap[segment] || segment.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+    const label =
+      labelMap[segment] || segment.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
     return { href, label };
   });
 

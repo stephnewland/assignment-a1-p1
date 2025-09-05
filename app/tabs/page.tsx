@@ -21,7 +21,8 @@ export default function TabsPage() {
     setTabs(updated);
   };
 
-  const addTab = () => setTabs([...tabs, { label: `Tab ${tabs.length + 1}`, content: 'Not yet finished.' }]);
+  const addTab = () =>
+    setTabs([...tabs, { label: `Tab ${tabs.length + 1}`, content: 'Not yet finished.' }]);
 
   const deleteTab = (index: number) => {
     if (tabs.length === 1) return;
@@ -92,7 +93,10 @@ export default function TabsPage() {
       <h1 style={{ marginBottom: '1rem' }}>Tab Generator</h1>
 
       {tabs.map((tab, index) => (
-        <div key={index} style={{ marginBottom: '1rem', display: 'flex', gap: '1rem', alignItems: 'center' }}>
+        <div
+          key={index}
+          style={{ marginBottom: '1rem', display: 'flex', gap: '1rem', alignItems: 'center' }}
+        >
           <input
             type="text"
             value={tab.label}

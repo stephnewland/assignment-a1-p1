@@ -1,9 +1,9 @@
 // app/components/CodeGeneratorWrapper.tsx
-"use client";
+'use client';
 
-import dynamic from "next/dynamic";
+import dynamic from 'next/dynamic';
 
-const CodeGenerator = dynamic(() => import("./CodeGenerator"), { ssr: false });
+const CodeGenerator = dynamic(() => import('./CodeGenerator'), { ssr: false });
 
 export default function CodeGeneratorWrapper() {
   return <CodeGenerator />;
