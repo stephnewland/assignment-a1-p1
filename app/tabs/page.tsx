@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import CopyButton from '../components/CopyButton';
 
 export default function TabsPage() {
   const [tabs, setTabs] = useState([
@@ -9,7 +10,6 @@ export default function TabsPage() {
     { label: 'Court Room', content: 'Court Room – Not yet finished.' },
   ]);
   const [generatedCode, setGeneratedCode] = useState('');
-  const [copied, setCopied] = useState(false); // <-- state for copy feedback
 
   useEffect(() => {
     document.cookie = 'lastTab=tabs; path=/';
@@ -21,8 +21,9 @@ export default function TabsPage() {
     setTabs(updated);
   };
 
-  const addTab = () =>
+  const addTab = () => {
     setTabs([...tabs, { label: `Tab ${tabs.length + 1}`, content: 'Not yet finished.' }]);
+  };
 
   const deleteTab = (index: number) => {
     if (tabs.length === 1) return;
@@ -49,43 +50,39 @@ export default function TabsPage() {
       .join('\n    ');
 
     const fullCode = `<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Tab Interface</title>
-  <style>
-    body { font-family: sans-serif; padding: 1rem; }
-    .tabs { display: flex; gap: 1rem; margin-bottom: 1rem; }
-    .tab-content { display: none; padding: 1rem; border: 1px solid #ccc; }
-    .tab-content.active { display: block; }
-    button[aria-selected="true"] { font-weight: bold; }
-  </style>
-</head>
-<body>
-  <h1>Interactive Tabs</h1>
-  <div class="tabs" role="tablist">
-    ${buttons}
-  </div>
-  ${contents}
-  <script>
-    function showTab(id, btn) {
-      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-      document.querySelectorAll('[role="tab"]').forEach(tab => tab.setAttribute('aria-selected', 'false'));
-      document.getElementById(id).classList.add('active');
-      btn.setAttribute('aria-selected', 'true');
-    }
-  </script>
-</body>
-</html>`;
-    setGeneratedCode(fullCode);
-  };
+      <html lang="en">
+      <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Tab Interface</title>
+        <style>
+          body { font-family: sans-serif; padding: 1rem; }
+          .tabs { display: flex; gap: 1rem; margin-bottom: 1rem; }
+          .tab-content { display: none; padding: 1rem; border: 1px solid #ccc; }
+          .tab-content.active { display: block; }
+          button[aria-selected="true"] { font-weight: bold; }
+        </style>
+      </head>
+      <body>
+        <h1>Interactive Tabs</h1>
+        <div class="tabs" role="tablist">
+          ${buttons}
+        </div>
 
-  // ✅ Copy to clipboard with accessible feedback
-  const copyToClipboard = () => {
-    navigator.clipboard.writeText(generatedCode);
-    setCopied(true); // show message
-    setTimeout(() => setCopied(false), 2000); // hide after 2 seconds
+        ${contents}
+
+        <script>
+          function showTab(id, btn) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('[role="tab"]').forEach(tab => tab.setAttribute('aria-selected', 'false'));
+            document.getElementById(id).classList.add('active');
+            btn.setAttribute('aria-selected', 'true');
+          }
+        </script>
+      </body>
+      </html>`;
+
+    setGeneratedCode(fullCode);
   };
 
   return (
@@ -95,7 +92,12 @@ export default function TabsPage() {
       {tabs.map((tab, index) => (
         <div
           key={index}
-          style={{ marginBottom: '1rem', display: 'flex', gap: '1rem', alignItems: 'center' }}
+          style={{
+            marginBottom: '1rem',
+            display: 'flex',
+            gap: '1rem',
+            alignItems: 'center',
+          }}
         >
           <input
             type="text"
@@ -168,28 +170,7 @@ export default function TabsPage() {
         Generate Code
       </button>
 
-      <button
-        onClick={copyToClipboard}
-        style={{
-          marginLeft: '1rem',
-          padding: '0.5rem 1rem',
-          fontSize: '1rem',
-          cursor: 'pointer',
-          backgroundColor: '#00b894',
-          color: '#fff',
-          border: 'none',
-          borderRadius: '4px',
-        }}
-        aria-label="Copy tab HTML code to clipboard"
-      >
-        Copy to Clipboard
-      </button>
-
-      {/* Accessible feedback */}
-      <p aria-live="polite" style={{ color: 'green', minHeight: '1.2rem', marginTop: '0.5rem' }}>
-        {copied ? 'Code copied to clipboard!' : ''}
-      </p>
-
+      <CopyButton htmlCode={generatedCode} />
       <textarea
         value={generatedCode}
         readOnly

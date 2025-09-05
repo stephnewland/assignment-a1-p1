@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useState, useEffect, useRef } from 'react';
-import { useRouter, usePathname } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 
 type HeaderProps = {
   theme: 'light' | 'dark';
@@ -14,7 +14,7 @@ export default function Header({ theme, toggleTheme }: HeaderProps) {
   const [isMobile, setIsMobile] = useState(false);
   const firstLinkRef = useRef<HTMLAnchorElement>(null);
   const mobileNavRef = useRef<HTMLDivElement>(null);
-  const router = useRouter();
+  // const router = useRouter(); -- lint warning; check to see if remove
   const pathname = usePathname();
 
   // Focus first link when menu opens
