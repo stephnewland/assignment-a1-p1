@@ -14,18 +14,8 @@ type RootLayoutProps = {
 
 export default function RootLayout({ children }: RootLayoutProps) {
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
-  const router = useRouter();
 
-  // Toggle light/dark theme
   const toggleTheme = () => setTheme(theme === 'light' ? 'dark' : 'light');
-
-  // Redirect to last visited tab on page load
-  useEffect(() => {
-    const lastTab = Cookies.get('lastTab');
-    if (lastTab && lastTab !== window.location.pathname) {
-      router.push(lastTab);
-    }
-  }, []);
 
   return (
     <html lang="en">
@@ -45,7 +35,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
           {/* Sticky Breadcrumbs below header */}
           <Breadcrumbs />
 
-          {/* Page content */}
+          {/* Page Content */}
           {children}
         </main>
 
