@@ -18,7 +18,7 @@ export default function Header({ theme, toggleTheme }: HeaderProps) {
   const pathname = usePathname();
   const router = useRouter();
 
-  // Redirect to lastTab if it exists (run once on mount)
+  // Restore last visited tab on initial load
   useEffect(() => {
     const lastTab = Cookies.get('lastTab');
     if (lastTab && lastTab !== window.location.pathname) {
@@ -38,6 +38,31 @@ export default function Header({ theme, toggleTheme }: HeaderProps) {
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
+
+  // Trap keyboard focus inside mobile menu when open
+  useEffect(() => {
+    const handleTabKey = (e: KeyboardEvent) => {
+      if (!menuOpen) return;
+      const focusableEls = mobileNavRef.current?.querySelectorAll('a, button');
+      if (!focusableEls || focusableEls.length === 0) return;
+
+      const firstEl = focusableEls[0] as HTMLElement;
+      const lastEl = focusableEls[focusableEls.length - 1] as HTMLElement;
+
+      if (e.key === 'Tab') {
+        if (e.shiftKey && document.activeElement === firstEl) {
+          e.preventDefault();
+          lastEl.focus();
+        } else if (!e.shiftKey && document.activeElement === lastEl) {
+          e.preventDefault();
+          firstEl.focus();
+        }
+      }
+    };
+
+    document.addEventListener('keydown', handleTabKey);
+    return () => document.removeEventListener('keydown', handleTabKey);
+  }, [menuOpen]);
 
   // Handle link clicks: close menu & save last tab
   const handleLinkClick = (path: string) => {
@@ -105,6 +130,7 @@ export default function Header({ theme, toggleTheme }: HeaderProps) {
 
       {/* Right: Theme Toggle + Hamburger */}
       <div className="flex items-center gap-4">
+        {/* Theme toggle */}
         <button
           aria-label="Toggle theme"
           onClick={toggleTheme}
@@ -117,6 +143,7 @@ export default function Header({ theme, toggleTheme }: HeaderProps) {
           {theme === 'light' ? '🌙 Dark Mode' : '☀️ Light Mode'}
         </button>
 
+        {/* Hamburger menu (mobile only) */}
         {isMobile && (
           <button
             aria-label="Toggle menu"
