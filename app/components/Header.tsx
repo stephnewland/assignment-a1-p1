@@ -2,7 +2,8 @@
 
 import Link from 'next/link';
 import { useState, useEffect, useRef } from 'react';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
+import Cookies from 'js-cookie';
 
 type HeaderProps = {
   theme: 'light' | 'dark';
@@ -14,8 +15,16 @@ export default function Header({ theme, toggleTheme }: HeaderProps) {
   const [isMobile, setIsMobile] = useState(false);
   const firstLinkRef = useRef<HTMLAnchorElement>(null);
   const mobileNavRef = useRef<HTMLDivElement>(null);
-  // const router = useRouter(); -- lint warning; check to see if remove
   const pathname = usePathname();
+  const router = useRouter();
+
+  // Redirect to lastTab if it exists (run once on mount)
+  useEffect(() => {
+    const lastTab = Cookies.get('lastTab');
+    if (lastTab && lastTab !== window.location.pathname) {
+      router.push(lastTab);
+    }
+  }, [router]);
 
   // Focus first link when menu opens
   useEffect(() => {
@@ -30,8 +39,9 @@ export default function Header({ theme, toggleTheme }: HeaderProps) {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  // Handle link clicks: close menu & save last tab
   const handleLinkClick = (path: string) => {
-    if (path !== '/') document.cookie = `lastTab=${path}; path=/`;
+    if (path !== '/') Cookies.set('lastTab', path);
     setMenuOpen(false);
   };
 
@@ -44,65 +54,28 @@ export default function Header({ theme, toggleTheme }: HeaderProps) {
     { href: '/tabs', label: 'Tabs', ariaLabel: 'View all tab options' },
   ];
 
-  const headerStyle: React.CSSProperties = {
-    position: 'relative',
-    backgroundColor: theme === 'dark' ? '#222' : '#f5f5f5',
-    color: theme === 'dark' ? '#eee' : '#333',
-    borderBottom: `1px solid ${theme === 'dark' ? '#444' : '#ccc'}`,
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: '1rem',
-    flexWrap: 'wrap',
-  };
-
-  const buttonStyle: React.CSSProperties = {
-    fontSize: '1rem',
-    padding: '0.5rem 1rem',
-    backgroundColor: theme === 'light' ? '#333' : '#eee',
-    color: theme === 'light' ? '#fff' : '#000',
-    border: 'none',
-    borderRadius: '4px',
-    cursor: 'pointer',
-    display: 'flex',
-    alignItems: 'center',
-    gap: '0.5rem',
-  };
-
-  const iconStyle: React.CSSProperties = { fontSize: '1.2rem' };
-
-  const menuButtonStyle: React.CSSProperties = {
-    fontSize: '1.5rem',
-    background: 'none',
-    border: 'none',
-    cursor: 'pointer',
-    color: theme === 'dark' ? '#eee' : '#333',
-  };
-
-  const linkStyle: React.CSSProperties = {
+  const linkStyle = {
     textDecoration: 'none',
     color: theme === 'dark' ? '#eee' : '#333',
     fontWeight: 'bold',
   };
 
   return (
-    <header role="banner" style={headerStyle}>
-      {/* Decorative top bar */}
-      <div
-        aria-hidden="true"
-        style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          height: '4px',
-          width: '100%',
-          backgroundColor: theme === 'light' ? '#000' : '#00ffcc',
-        }}
-      />
-
-      {/* Left section: Student ID + Desktop Nav */}
-      <div style={{ display: 'flex', flexDirection: 'column' }}>
-        <p aria-label="Student ID" style={{ fontWeight: 'bold' }}>
+    <header
+      role="banner"
+      className="sticky top-0 z-50 bg-background border-b border-gray-300"
+      style={{
+        padding: '1rem',
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        flexWrap: 'wrap',
+        color: theme === 'dark' ? '#eee' : '#333',
+      }}
+    >
+      {/* Left: Student ID + Desktop Nav */}
+      <div className="flex flex-col">
+        <p aria-label="Student ID" className="font-bold">
           Student #21993608
         </p>
 
@@ -111,7 +84,7 @@ export default function Header({ theme, toggleTheme }: HeaderProps) {
             role="navigation"
             tabIndex={0}
             aria-label="Main navigation"
-            style={{ display: 'flex', gap: '1rem', marginTop: '0.5rem' }}
+            className="flex gap-4 mt-2"
           >
             {navLinks.map(({ href, label, ariaLabel }, index) => (
               <Link
@@ -130,75 +103,55 @@ export default function Header({ theme, toggleTheme }: HeaderProps) {
         )}
       </div>
 
-      {/* Right section: Theme Toggle + Mobile Menu Button */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+      {/* Right: Theme Toggle + Hamburger */}
+      <div className="flex items-center gap-4">
         <button
-          aria-label="Toggle between light and dark theme"
+          aria-label="Toggle theme"
           onClick={toggleTheme}
-          style={buttonStyle}
+          className="px-3 py-1 rounded"
+          style={{
+            backgroundColor: theme === 'light' ? '#333' : '#eee',
+            color: theme === 'light' ? '#fff' : '#000',
+          }}
         >
-          {theme === 'light' ? (
-            <>
-              <span style={iconStyle}>🌙</span>
-              <span>Dark Mode</span>
-            </>
-          ) : (
-            <>
-              <span style={iconStyle}>☀️</span>
-              <span>Light Mode</span>
-            </>
-          )}
+          {theme === 'light' ? '🌙 Dark Mode' : '☀️ Light Mode'}
         </button>
 
-        <button
-          aria-label="Toggle menu visibility"
-          aria-expanded={menuOpen}
-          onClick={() => setMenuOpen(!menuOpen)}
-          tabIndex={0}
-          style={menuButtonStyle}
-        >
-          {menuOpen ? '✖' : '☰'}
-        </button>
+        {isMobile && (
+          <button
+            aria-label="Toggle menu"
+            aria-expanded={menuOpen}
+            onClick={() => setMenuOpen(!menuOpen)}
+            className="text-2xl"
+          >
+            {menuOpen ? '✖' : '☰'}
+          </button>
+        )}
       </div>
 
-      {/* Mobile Dropdown Nav with smooth slide-down */}
+      {/* Mobile Dropdown */}
       <div
         ref={mobileNavRef}
         style={{
           overflow: 'hidden',
           maxHeight: menuOpen ? `${mobileNavRef.current?.scrollHeight ?? 0}px` : '0',
           transition: 'max-height 0.3s ease-in-out',
-          position: 'absolute',
-          top: '100%',
-          left: 0,
-          width: '100%',
-          backgroundColor: theme === 'dark' ? '#333' : '#fff',
-          borderTop: `1px solid ${theme === 'dark' ? '#555' : '#ccc'}`,
-          padding: menuOpen ? '1rem' : '0 1rem',
-          boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
-          zIndex: 1000,
         }}
+        className="absolute top-full left-0 w-full bg-background border-t border-gray-300 shadow-md p-4 flex flex-col gap-2 z-50"
         aria-hidden={!menuOpen}
       >
-        <nav
-          role="navigation"
-          tabIndex={0}
-          aria-label="Dropdown navigation"
-          style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}
-        >
-          {navLinks.map(({ href, label, ariaLabel }) => (
-            <Link
-              key={href}
-              href={href}
-              style={linkStyle}
-              aria-label={ariaLabel}
-              aria-current={pathname === href ? 'page' : undefined}
-              onClick={() => handleLinkClick(href)}
-            >
-              {label}
-            </Link>
-          ))}
-        </nav>
+        {navLinks.map(({ href, label, ariaLabel }) => (
+          <Link
+            key={href}
+            href={href}
+            style={linkStyle}
+            aria-label={ariaLabel}
+            aria-current={pathname === href ? 'page' : undefined}
+            onClick={() => handleLinkClick(href)}
+          >
+            {label}
+          </Link>
+        ))}
       </div>
     </header>
   );

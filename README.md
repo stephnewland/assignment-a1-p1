@@ -52,3 +52,16 @@ This project is a Next.js web application that generates standalone HTML5 + Java
 ## AI Generated content
 
 - Microsoft CoPilot helped suggest what content was required to go in this README file.
+
+| Feature              | Implemented in File(s)                                                 |
+| -------------------- | ---------------------------------------------------------------------- |
+| Sticky Header        | `Header.tsx` + `RootLayout` padding for main content                   |
+| Sticky Breadcrumbs   | `Breadcrumbs.tsx`                                                      |
+| Theme Toggle         | `Header.tsx`                                                           |
+| Code Generator       | `CodeGenerator.tsx` + `CodeGeneratorWrapper.tsx`                       |
+| Tab Generator        | `tabs/page.tsx`                                                        |
+| Placeholder Pages    | `coding-races/page.tsx`, `court-room/page.tsx`, `escape-room/page.tsx` |
+| Footer               | `Footer.tsx`                                                           |
+| ARIA / Accessibility | `Header.tsx`, `Breadcrumbs.tsx`, `Tab generator` components            |
+| Cookie Tracking      | `Header.tsx` (last tab), `Tracker.tsx`                                 |
+| Mobile Menu          | `Header.tsx` mobile toggle ( `HamburgerMenu.tsx`)                      |
