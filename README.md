@@ -65,3 +65,17 @@ This project is a Next.js web application that generates standalone HTML5 + Java
 | ARIA / Accessibility | `Header.tsx`, `Breadcrumbs.tsx`, `Tab generator` components            |
 | Cookie Tracking      | `Header.tsx` (last tab), `Tracker.tsx`                                 |
 | Mobile Menu          | `Header.tsx` mobile toggle ( `HamburgerMenu.tsx`)                      |
+
+References Used:
+EEE References
+P. Ballard, Sams Teach Yourself JavaScript in 24 Hours. Indianapolis, IN, USA: Sams Publishing, 2020.
+
+C. Gackenheimer, Introduction to React. Berkeley, CA, USA: Apress, 2015.
+
+S. Hoque, Full-Stack React Projects: Learn MERN stack development by building modern web apps using MongoDB, Express, React, and Node.js. 2nd ed. Birmingham, UK: Packt Publishing, 2020.
+
+D. Matuszek, Quick JavaScript. Boca Raton, FL, USA: Chapman and Hall/CRC, 2023.
+
+M. Simon, JavaScript for Web Developers: Understanding the Basics. Berkeley, CA, USA: Apress, 2023.
+
+S. Hoque, Full-Stack React Projects: Learn MERN stack development by building modern web apps using MongoDB, Express, React, and Node.js. 2nd ed. Birmingham, UK: Packt Publishing, 2020.
